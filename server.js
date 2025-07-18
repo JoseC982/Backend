@@ -10,11 +10,29 @@ const restaurantes = [
     { id: 4, nombre: "Restaurante El Sabor", direccion: "Calle del Mar", tipo: "Mariscos" },
 ];
 
+require("./server/config/mongoose.config");
+
 //app es una instancia de express
 //put, get, delete, son rutas que se pueden definir en express
 //app.use() es un middleware, se va a ejecutar antes de todas las rutas
 app.use(express.json()); // para poder recibir datos en formato JSON, funciones que se van a ejecutar antes de las funciones que coincidad con la peticion, parsea el json y transforma en objeto de js
+app.use(express.urlencoded({extended:true}));
 
+//const allRestaurantesRoutes = require("./server/routes/restaurante.routes");  //este es para usar mongodb
+const allRestaurantesRoutes = require("./serverMySQL/routes/restaurante.routes"); // este es para usar mysql
+allRestaurantesRoutes(app);
+//const allRestaurantesRoutes = require("./server/routes/restaurante.routes");  //este es para usar mongodb
+const allTiposComidaRoutes = require("./serverMySQL/routes/tipoComida.routes"); // este es para usar mysql
+allTiposComidaRoutes(app);
+
+const allMenuRoutes = require("./serverMySQL/routes/menu.router");
+allMenuRoutes(app);
+
+/// *************** de aqui para abajo no es necesario, esto era cuando aun no separabamos los archivos, model, controller,routes
+
+app.listen(port, () => {
+console.log("Server escuchando en el puerto", port);
+})
 app.get("/api/v1/restaurantes", (req, res) => {
     res.json(restaurantes);
 });
